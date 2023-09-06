@@ -3,9 +3,10 @@ import gradio as gr
 from PIL import Image, ImageDraw, ImageOps
 from modules import processing, shared, images, devices, scripts
 from modules.processing import StableDiffusionProcessing
-from modules.processing import Processed
+from modules.processing import Processed, build_decoded_params_from_processing, get_function_name_from_processing
 from modules.shared import opts, state
 from enum import Enum
+from modules.system_monitor import monitor_call_context
 
 elem_id_prefix = "ultimateupscale"
 
@@ -177,7 +178,12 @@ class USDURedraw():
                 draw.rectangle(self.calc_rectangle(xi, yi), fill="white")
                 p.init_images = [image]
                 p.image_mask = mask
-                processed = processing.process_images(p)
+                with monitor_call_context(
+                        p.get_request(),
+                        get_function_name_from_processing(p),
+                        "script.ultimate-upscale.redraw",
+                        decoded_params=build_decoded_params_from_processing(p)):
+                    processed = processing.process_images(p)
                 draw.rectangle(self.calc_rectangle(xi, yi), fill="black")
                 if (len(processed.images) > 0):
                     image = processed.images[0]
@@ -214,7 +220,12 @@ class USDURedraw():
                 draw.rectangle(self.calc_rectangle(xi, yi), fill="white")
                 p.init_images = [image]
                 p.image_mask = mask
-                processed = processing.process_images(p)
+                with monitor_call_context(
+                        p.get_request(),
+                        get_function_name_from_processing(p),
+                        "script.ultimate-upscale.redraw",
+                        decoded_params=build_decoded_params_from_processing(p)):
+                    processed = processing.process_images(p)
                 draw.rectangle(self.calc_rectangle(xi, yi), fill="black")
                 if (len(processed.images) > 0):
                     image = processed.images[0]
@@ -228,7 +239,12 @@ class USDURedraw():
                 draw.rectangle(self.calc_rectangle(xi, yi), fill="white")
                 p.init_images = [image]
                 p.image_mask = mask
-                processed = processing.process_images(p)
+                with monitor_call_context(
+                        p.get_request(),
+                        get_function_name_from_processing(p),
+                        "script.ultimate-upscale.redraw",
+                        decoded_params=build_decoded_params_from_processing(p)):
+                    processed = processing.process_images(p)
                 draw.rectangle(self.calc_rectangle(xi, yi), fill="black")
                 if (len(processed.images) > 0):
                     image = processed.images[0]
@@ -287,7 +303,12 @@ class USDUSeamsFix():
 
                 p.init_images = [image]
                 p.image_mask = mask
-                processed = processing.process_images(p)
+                with monitor_call_context(
+                        p.get_request(),
+                        get_function_name_from_processing(p),
+                        "script.ultimate-upscale.redraw",
+                        decoded_params=build_decoded_params_from_processing(p)):
+                    processed = processing.process_images(p)
                 if (len(processed.images) > 0):
                     image = processed.images[0]
 
@@ -304,7 +325,12 @@ class USDUSeamsFix():
 
                 p.init_images = [image]
                 p.image_mask = mask
-                processed = processing.process_images(p)
+                with monitor_call_context(
+                        p.get_request(),
+                        get_function_name_from_processing(p),
+                        "script.ultimate-upscale.redraw",
+                        decoded_params=build_decoded_params_from_processing(p)):
+                    processed = processing.process_images(p)
                 if (len(processed.images) > 0):
                     image = processed.images[0]
 
@@ -340,7 +366,12 @@ class USDUSeamsFix():
 
                 p.init_images = [fixed_image]
                 p.image_mask = mask
-                processed = processing.process_images(p)
+                with monitor_call_context(
+                        p.get_request(),
+                        get_function_name_from_processing(p),
+                        "script.ultimate-upscale.redraw",
+                        decoded_params=build_decoded_params_from_processing(p)):
+                    processed = processing.process_images(p)
                 if (len(processed.images) > 0):
                     fixed_image = processed.images[0]
 
@@ -379,7 +410,12 @@ class USDUSeamsFix():
 
             p.init_images = [image]
             p.image_mask = mask
-            processed = processing.process_images(p)
+            with monitor_call_context(
+                    p.get_request(),
+                    get_function_name_from_processing(p),
+                    "script.ultimate-upscale.redraw",
+                    decoded_params=build_decoded_params_from_processing(p)):
+                processed = processing.process_images(p)
             if (len(processed.images) > 0):
                 image = processed.images[0]
         for yi in range(1, cols):
@@ -394,7 +430,12 @@ class USDUSeamsFix():
 
             p.init_images = [image]
             p.image_mask = mask
-            processed = processing.process_images(p)
+            with monitor_call_context(
+                    p.get_request(),
+                    get_function_name_from_processing(p),
+                    "script.ultimate-upscale.redraw",
+                    decoded_params=build_decoded_params_from_processing(p)):
+                processed = processing.process_images(p)
             if (len(processed.images) > 0):
                 image = processed.images[0]
 
@@ -490,6 +531,26 @@ class Script(scripts.Script):
             fn=select_fix_type,
             inputs=seams_fix_type,
             outputs=[seams_fix_denoise, seams_fix_width, seams_fix_mask_blur, seams_fix_padding]
+        )
+        tab_id = "tab_txt2img"
+        function_name = "modules.txt2img.txt2img"
+        if is_img2img:
+            tab_id = "tab_img2img"
+            function_name = "modules.img2img.img2img"
+        target_size_type.change(
+            None,
+            inputs=[],
+            outputs=[target_size_type, custom_width, custom_height, custom_scale, tile_width, tile_height],
+            _js=f"""
+                monitorMutiplier(
+                    '{tab_id}',
+                    '{function_name}',
+                    'script.ultimate-upscale.multiplier',
+                    extractor = (target_size_type, custom_width, custom_height, custom_scale, tile_width, tile_height) => {{
+                        if (target_size_types === 'From img2img2 settings' || target_size_types === 'Custom size')
+                        {{return custom_width * custom_heighti / tile_width / tile_height;}}
+                        return (custom_scale + 1) * (custom_scale + 1);
+                    }})"""
         )
 
         def select_scale_type(scale_index):
