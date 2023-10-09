@@ -182,7 +182,8 @@ class USDURedraw():
                         p.get_request(),
                         get_function_name_from_processing(p),
                         "script.ultimate-upscale.redraw",
-                        decoded_params=build_decoded_params_from_processing(p)):
+                        decoded_params=build_decoded_params_from_processing(p),
+                        only_available_for=["plus", "pro", "api"]):
                     processed = processing.process_images(p)
                 draw.rectangle(self.calc_rectangle(xi, yi), fill="black")
                 if (len(processed.images) > 0):
@@ -224,7 +225,8 @@ class USDURedraw():
                         p.get_request(),
                         get_function_name_from_processing(p),
                         "script.ultimate-upscale.redraw",
-                        decoded_params=build_decoded_params_from_processing(p)):
+                        decoded_params=build_decoded_params_from_processing(p),
+                        only_available_for=["plus", "pro", "api"]):
                     processed = processing.process_images(p)
                 draw.rectangle(self.calc_rectangle(xi, yi), fill="black")
                 if (len(processed.images) > 0):
@@ -243,7 +245,8 @@ class USDURedraw():
                         p.get_request(),
                         get_function_name_from_processing(p),
                         "script.ultimate-upscale.redraw",
-                        decoded_params=build_decoded_params_from_processing(p)):
+                        decoded_params=build_decoded_params_from_processing(p),
+                        only_available_for=["plus", "pro", "api"]):
                     processed = processing.process_images(p)
                 draw.rectangle(self.calc_rectangle(xi, yi), fill="black")
                 if (len(processed.images) > 0):
@@ -307,7 +310,8 @@ class USDUSeamsFix():
                         p.get_request(),
                         get_function_name_from_processing(p),
                         "script.ultimate-upscale.redraw",
-                        decoded_params=build_decoded_params_from_processing(p)):
+                        decoded_params=build_decoded_params_from_processing(p),
+                        only_available_for=["plus", "pro", "api"]):
                     processed = processing.process_images(p)
                 if (len(processed.images) > 0):
                     image = processed.images[0]
@@ -329,7 +333,8 @@ class USDUSeamsFix():
                         p.get_request(),
                         get_function_name_from_processing(p),
                         "script.ultimate-upscale.redraw",
-                        decoded_params=build_decoded_params_from_processing(p)):
+                        decoded_params=build_decoded_params_from_processing(p),
+                        only_available_for=["plus", "pro", "api"]):
                     processed = processing.process_images(p)
                 if (len(processed.images) > 0):
                     image = processed.images[0]
@@ -370,7 +375,8 @@ class USDUSeamsFix():
                         p.get_request(),
                         get_function_name_from_processing(p),
                         "script.ultimate-upscale.redraw",
-                        decoded_params=build_decoded_params_from_processing(p)):
+                        decoded_params=build_decoded_params_from_processing(p),
+                        only_available_for=["plus", "pro", "api"]):
                     processed = processing.process_images(p)
                 if (len(processed.images) > 0):
                     fixed_image = processed.images[0]
@@ -414,7 +420,8 @@ class USDUSeamsFix():
                     p.get_request(),
                     get_function_name_from_processing(p),
                     "script.ultimate-upscale.redraw",
-                    decoded_params=build_decoded_params_from_processing(p)):
+                    decoded_params=build_decoded_params_from_processing(p),
+                    only_available_for=["plus", "pro", "api"]):
                 processed = processing.process_images(p)
             if (len(processed.images) > 0):
                 image = processed.images[0]
@@ -434,7 +441,8 @@ class USDUSeamsFix():
                     p.get_request(),
                     get_function_name_from_processing(p),
                     "script.ultimate-upscale.redraw",
-                    decoded_params=build_decoded_params_from_processing(p)):
+                    decoded_params=build_decoded_params_from_processing(p),
+                    only_available_for=["plus", "pro", "api"]):
                 processed = processing.process_images(p)
             if (len(processed.images) > 0):
                 image = processed.images[0]
