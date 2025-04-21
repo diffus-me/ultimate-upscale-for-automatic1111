@@ -556,26 +556,6 @@ class Script(scripts.Script):
             inputs=seams_fix_type,
             outputs=[seams_fix_denoise, seams_fix_width, seams_fix_mask_blur, seams_fix_padding]
         )
-        tab_id = "tab_txt2img"
-        function_name = "modules.txt2img.txt2img"
-        if is_img2img:
-            tab_id = "tab_img2img"
-            function_name = "modules.img2img.img2img"
-        target_size_type.change(
-            None,
-            inputs=[],
-            outputs=[target_size_type, custom_width, custom_height, custom_scale, tile_width, tile_height],
-            _js=f"""
-                monitorMutiplier(
-                    '{tab_id}',
-                    '{function_name}',
-                    'script.ultimate-upscale.multiplier',
-                    extractor = (target_size_type, custom_width, custom_height, custom_scale, tile_width, tile_height) => {{
-                        if (target_size_types === 'From img2img2 settings' || target_size_types === 'Custom size')
-                        {{return custom_width * custom_heighti / tile_width / tile_height;}}
-                        return (custom_scale + 1) * (custom_scale + 1);
-                    }})"""
-        )
 
         def select_scale_type(scale_index):
             is_custom_size = scale_index == 1
